@@ -7,7 +7,7 @@ trigger:
 - master
 
 variables:
-    azureSubscription: "Betale for forbruk(Converted to EA)"
+    azureSubscription: Betale for forbruk(Converted to EA)
     appName: quantdeploy
 
 pool:
