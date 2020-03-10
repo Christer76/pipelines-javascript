@@ -6,8 +6,12 @@
 trigger:
 - master
 
+variables:
+    azureSubscription: "Betale for forbruk(Converted to EA)"
+    appName: quantdeploy
+
 pool:
-  vmImage: 'ubuntu-latest'  # examples of other options: 'macOS-10.14', 'vs2017-win2016'
+  vmImage: 'ubuntu-latest' # examples of other options: 'macOS-10.14', 'vs2017-win2016'
 
 steps:
 - task: NodeTool@0
@@ -19,3 +23,20 @@ steps:
     npm install
     npm run build
   displayName: 'npm install and build'
+
+- task: CopyFiles@2
+  inputs:
+    Contents: '**' ## update to match what you want to copy
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  inputs: 
+    pathtoPublish: $(Build.ArtifactStagingDirectory) # dist or build files
+
+- task: AzureWebApp@1
+  displayName: 'Azure Web App Deploy'
+  inputs:
+    azureSubscription: $(azureSubscription)
+    appType: webAppLinux
+    appName: $(appName)
+    package: $(System.ArtifactsDirectory)/**/*.zip
